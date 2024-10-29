@@ -1,0 +1,20 @@
+{
+  "name": "node-api-template",
+  "version": "1.0.0",
+  "description": "node template",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "server": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "pdfkit": "^0.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
