@@ -1,13 +1,19 @@
-const mysql = require("mysql");
+import createConnectionPool, { sql } from "@databases/mysql";
 
-export const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "dottoe",
-  database: "template",
-});
+// export const getConnection = async () => {
+//   try {
+//     const connection = await mysql.createConnection({
+//       host: "localhost",
+//       user: "root",
+//       port: 3308,
+//       password: "dottoe",
+//     });
+//     return connection;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+export { sql };
+const db = createConnectionPool("mysql://root:dottoe@localhost:3308/db");
 
-connection.connect((err) => {
-  if (err) throw err;
-  console.log("Connected to MySQL database!");
-});
+export default db;
