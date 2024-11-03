@@ -33,9 +33,10 @@ profileRouter.post("/create", async (req, res) => {
     title,
   } = req.body;
   try {
+    let full_name = `${first_name} ${last_name}`;
     await db.query(
-      sql`INSERT INTO profiles (first_name, last_name, email, phone, address_line_1, address_line_2, city, state, zip, title) 
-          VALUES (${first_name}, ${last_name}, ${email}, ${phone}, ${address_line_1}, ${address_line_2}, ${city}, ${state}, ${zip}, ${title})`
+      sql`INSERT INTO profiles (first_name, last_name, full_name, email, phone, address_line_1, address_line_2, city, state, zip, title) 
+          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${address_line_1}, ${address_line_2}, ${city}, ${state}, ${zip}, ${title})`
     );
 
     const result = await db.query(

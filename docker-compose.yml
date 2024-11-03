@@ -1,4 +1,12 @@
 services:
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: rr-mailhog
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    platform: linux/amd64
   db:
     image: mysql:8.0
     environment:

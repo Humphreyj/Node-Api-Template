@@ -11,15 +11,18 @@ const port = 8080;
 
 app.use(cors()).use(express.json()).use("/api", router);
 
-app.get("/pdf2", async (req, res) => {
+app.get("/pdf2/:id", async (req, res) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto("http://localhost:3030/invoice", {
-    waitUntil: "networkidle2",
-  });
+  const invoiceId = req.params.id;
+  console.log(req.params);
+  await page.goto(`http://localhost:3030/send-invoice/${invoiceId}`);
+  // await page.goto(
+  //   `http://localhost:3030/send-invoice/109d17de-987c-11ef-9b4a-0242ac140002`
+  // );
 
   // Generate the PDF as a buffer
-  const pdfBuffer = await page.pdf();
+  const pdfBuffer = await page.pdf({ printBackground: true });
 
   await browser.close();
 
