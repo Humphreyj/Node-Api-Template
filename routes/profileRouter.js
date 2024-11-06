@@ -4,9 +4,12 @@ export const profileRouter = Router();
 
 profileRouter.get("/", async (req, res) => {
   const results = await db.query(sql`
-        SELECT * from profiles;
+        SELECT * from profiles
+        WHERE role = 'client';
       `);
+
   res.send(results);
+
   return;
 });
 
@@ -30,13 +33,13 @@ profileRouter.post("/create", async (req, res) => {
     city,
     state,
     zip,
-    title,
+    role,
   } = req.body;
   try {
     let full_name = `${first_name} ${last_name}`;
     await db.query(
-      sql`INSERT INTO profiles (first_name, last_name, full_name, email, phone, address_line_1, address_line_2, city, state, zip, title) 
-          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${address_line_1}, ${address_line_2}, ${city}, ${state}, ${zip}, ${title})`
+      sql`INSERT INTO profiles (first_name, last_name, full_name, email, phone, address_line_1, address_line_2, city, state, zip, role) 
+          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${address_line_1}, ${address_line_2}, ${city}, ${state}, ${zip}, ${role})`
     );
 
     const result = await db.query(
@@ -63,14 +66,16 @@ profileRouter.put("/update", async (req, res) => {
     city,
     state,
     zip,
-    title,
+    role,
   } = req.body;
   try {
+    let full_name = `${first_name} ${last_name}`;
     await db.query(sql`
         UPDATE profiles
         SET 
           first_name = ${first_name},
           last_name = ${last_name},
+          full_name = ${full_name},
           phone = ${phone},
           email = ${email},
           address_line_1 = ${address_line_1},
@@ -78,7 +83,7 @@ profileRouter.put("/update", async (req, res) => {
           city = ${city},
           state = ${state},
           zip = ${zip},
-          title = ${title}
+          role = ${role}
         WHERE id = ${id}
       `);
 
@@ -99,4 +104,5 @@ profileRouter.delete("/delete/:id", async (req, res) => {
     DELETE FROM profiles
     WHERE id=${id}
   `);
+  res.json({ success: true, id: id });
 });

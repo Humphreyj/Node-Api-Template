@@ -8,7 +8,7 @@ services:
       - 8025:8025
     platform: linux/amd64
   db:
-    image: mysql:8.0
+    image: mysql:8.0.40
     environment:
       MYSQL_ROOT_PASSWORD: dottoe
     platform: linux/amd64

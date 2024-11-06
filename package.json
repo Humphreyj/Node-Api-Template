@@ -14,6 +14,8 @@
     "@databases/mysql": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "helmet": "^8.0.0",
+    "nodemailer": "^6.9.16",
     "pdfkit": "^0.15.0",
     "puppeteer": "^23.6.1"
   },

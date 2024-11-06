@@ -25,21 +25,60 @@ invoiceRouter.post("/create", async (req, res) => {
     client,
     invoiceNumber,
     invoiceDate,
-    invoiceDueDate,
+    dueDate,
     invoiceTotal,
     lineItems,
     status,
   } = req.body;
 
-  console.log(req.body);
   try {
     await db.query(
       sql`INSERT INTO invoices (clientId, client, invoiceNumber, invoiceDate, dueDate, invoiceTotal, lineItems, status) 
           VALUES (${clientId}, ${JSON.stringify(
         client
-      )}, ${invoiceNumber}, ${invoiceDate}, ${invoiceDueDate}, ${invoiceTotal}, ${JSON.stringify(
+      )}, ${invoiceNumber}, ${invoiceDate}, ${dueDate}, ${invoiceTotal}, ${JSON.stringify(
         lineItems
       )}, ${status})`
+    );
+
+    const result = await db.query(
+      sql`SELECT id FROM invoices WHERE clientId = ${clientId} LIMIT 1`
+    );
+    const newInvoiceId = result[0].id;
+    res.json({ success: true, id: newInvoiceId });
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).json({ success: false, message: "Error creating invoice" });
+    return;
+  }
+});
+
+invoiceRouter.put("/update", async (req, res) => {
+  const {
+    id,
+    clientId,
+    client,
+    invoiceNumber,
+    invoiceDate,
+    dueDate,
+    invoiceTotal,
+    lineItems,
+    status,
+  } = req.body;
+
+  try {
+    await db.query(
+      sql`UPDATE invoices
+          SET
+            clientId = ${clientId},
+            client = ${JSON.stringify(client)},
+            invoiceNumber = ${invoiceNumber},
+            invoiceDate = ${invoiceDate.substring(0, 10)},
+            dueDate = ${dueDate.substring(0, 10)},
+            invoiceTotal = ${invoiceTotal},
+            lineItems = ${JSON.stringify(lineItems)},
+            status = ${status}
+            `
     );
 
     const result = await db.query(
