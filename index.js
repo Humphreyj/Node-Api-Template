@@ -5,6 +5,7 @@ import nodemailer from "nodemailer";
 import { router } from "./routes/index.js";
 import cors from "cors";
 import helmet from "helmet";
+import "dotenv/config";
 
 const app = express();
 const port = 8080;
