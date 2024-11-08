@@ -46,7 +46,7 @@ profileRouter.post("/create", async (req, res) => {
       sql`SELECT id FROM profiles WHERE email = ${email} LIMIT 1`
     );
     const newProfileId = result[0].id;
-    res.json({ success: true, id: newProfileId });
+    res.status(201).json({ success: true, id: newProfileId });
   } catch (error) {
     console.error("error", error);
     res.status(500).json({ success: false, message: "Error creating profile" });

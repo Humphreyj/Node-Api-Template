@@ -1,10 +1,14 @@
 import { Router } from "express";
+// PDF Generation
+import puppeteer from "puppeteer";
+import nodemailer from "nodemailer";
 import db, { sql } from "../db.js";
 export const invoiceRouter = Router();
 
 invoiceRouter.get("/", async (req, res) => {
   const results = await db.query(sql`
-        SELECT * from invoices;
+        SELECT * from invoices
+        ORDER BY invoiceNumber;
       `);
   res.send(results);
   return;
@@ -78,6 +82,7 @@ invoiceRouter.put("/update", async (req, res) => {
             invoiceTotal = ${invoiceTotal},
             lineItems = ${JSON.stringify(lineItems)},
             status = ${status}
+          WHERE id = ${id}
             `
     );
 
@@ -93,12 +98,61 @@ invoiceRouter.put("/update", async (req, res) => {
   }
 });
 
-// invoiceRouter.get("/invoice/:id", async (req, res) => {
-//   let invoiceId = req.params.id;
-//   const results = await db.query(sql`
-//         SELECT * from invoices WHERE id = ${invoiceId};
-//       `);
-//   console.log(invoiceId);
-//   res.send(results[0]);
-//   return;
-// });
+invoiceRouter.post("/send-invoice", async (req, res) => {
+  const { invoiceId, client, invoiceNumber } = req.body;
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT, // Default port for Mailhog
+    secure: false,
+    // auth: {
+    //   user: process.env.SMTP_USER,
+    //   pass: process.env.SMTP_PASS,
+    // },
+  });
+  await page.goto(`http://localhost:3030/send-invoice/${invoiceId}`);
+
+  // Generate the PDF as a buffer
+  const pdfBuffer = await page.pdf({ printBackground: true });
+
+  await browser.close();
+
+  // Set headers to prompt a file download
+  res.setHeader("Content-Disposition", "attachment; filename=invoice.pdf");
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Length", pdfBuffer.length);
+  const mailOptions = {
+    from: "system@ezpdf.app",
+    to: client.email,
+    subject: `Invoice for ${client.full_name}`,
+    text: "Your invoice is attached, you better pay it.",
+    attachments: [
+      {
+        filename: `Invoice-${invoiceNumber}.pdf`,
+        content: pdfBuffer,
+        contentType: "application/pdf",
+      },
+    ],
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.error("Error sending email:", error);
+    }
+    console.log("Email sent:", info.messageId);
+  });
+  const date = new Date();
+  const lastSentDate = date.toISOString();
+  await db.query(
+    sql`UPDATE invoices
+        SET
+          lastSentDate = ${lastSentDate.substring(0, 10)},
+          status = 'unpaid'
+          `
+  );
+
+  // Send the buffer and close the response
+  res.send(pdfBuffer);
+});
