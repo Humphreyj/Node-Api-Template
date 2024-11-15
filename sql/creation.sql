@@ -1,27 +1,23 @@
 CREATE TABLE `profiles` (
-  `id` CHAR(36) NOT NULL DEFAULT (UUID()),
+  `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
   `first_name` VARCHAR(45) DEFAULT NULL,
   `last_name` VARCHAR(45) DEFAULT NULL,
   `full_name` VARCHAR(45) DEFAULT NULL,
   `email` VARCHAR(45) DEFAULT NULL,
   `phone` VARCHAR(45) DEFAULT NULL,
-  `address_line_1` VARCHAR(45) DEFAULT NULL,
-  `address_line_2` VARCHAR(45) DEFAULT NULL,
-  `city` VARCHAR(45) DEFAULT NULL,
-  `state` VARCHAR(45) DEFAULT NULL,
-  `zip` VARCHAR(45) DEFAULT NULL,
-  `title` VARCHAR(45) DEFAULT NULL,
+  `address` JSON DEFAULT NULL,
+  `role` VARCHAR(45) DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE (`email`),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `invoices` (
-  `id` CHAR(36) NOT NULL DEFAULT (UUID()),
-  `clientId` CHAR(36) NOT NULL,
+  `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
+  `clientId` VARCHAR(36) NOT NULL,
   `client` JSON DEFAULT NULL,
-  `invoiceNumber` CHAR(36) NOT NULL,
+  `invoiceNumber` VARCHAR(36) NOT NULL,
   `invoiceDate` DATE NOT NULL,
   `dueDate` DATE NOT NULL,
   `invoiceTotal` DECIMAL(10, 2) NOT NULL,
@@ -31,11 +27,23 @@ CREATE TABLE `invoices` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`clientId`) REFERENCES `profiles`(`id`) 
     ON DELETE CASCADE
-    ON UPDATE CASCADE
+    ON UPDATE CASCADE,
+    INDEX (`clientId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-
+CREATE TABLE `accounts` (
+  `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
+  `primaryContact` VARCHAR(36) NOT NULL,
+  `companyName` VARCHAR(45) NOT NULL,
+  `companyAddress` JSON,
+  `subscriptionPlan` VARCHAR(36),
+  `billingInfo` JSON,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`primaryContact`) REFERENCES `profiles`(`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 

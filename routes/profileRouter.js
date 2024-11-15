@@ -23,23 +23,12 @@ profileRouter.get("/:id", async (req, res) => {
 });
 
 profileRouter.post("/create", async (req, res) => {
-  const {
-    first_name,
-    last_name,
-    email,
-    phone,
-    address_line_1,
-    address_line_2,
-    city,
-    state,
-    zip,
-    role,
-  } = req.body;
+  const { first_name, last_name, email, phone, address, role } = req.body;
   try {
     let full_name = `${first_name} ${last_name}`;
     await db.query(
-      sql`INSERT INTO profiles (first_name, last_name, full_name, email, phone, address_line_1, address_line_2, city, state, zip, role) 
-          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${address_line_1}, ${address_line_2}, ${city}, ${state}, ${zip}, ${role})`
+      sql`INSERT INTO profiles (first_name, last_name, full_name, email, phone, address, role) 
+          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${address}, ${role})`
     );
 
     const result = await db.query(
@@ -55,19 +44,7 @@ profileRouter.post("/create", async (req, res) => {
 });
 
 profileRouter.put("/update", async (req, res) => {
-  const {
-    id,
-    first_name,
-    last_name,
-    phone,
-    email,
-    address_line_1,
-    address_line_2,
-    city,
-    state,
-    zip,
-    role,
-  } = req.body;
+  const { id, first_name, last_name, phone, email, address, role } = req.body;
   try {
     let full_name = `${first_name} ${last_name}`;
     await db.query(sql`
@@ -78,11 +55,7 @@ profileRouter.put("/update", async (req, res) => {
           full_name = ${full_name},
           phone = ${phone},
           email = ${email},
-          address_line_1 = ${address_line_1},
-          address_line_2 = ${address_line_2},
-          city = ${city},
-          state = ${state},
-          zip = ${zip},
+          address = ${JSON.stringify(address)},
           role = ${role}
         WHERE id = ${id}
       `);
