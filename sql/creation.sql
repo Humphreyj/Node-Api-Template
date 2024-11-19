@@ -1,12 +1,12 @@
 CREATE TABLE `profiles` (
   `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
-  `first_name` VARCHAR(45) DEFAULT NULL,
-  `last_name` VARCHAR(45) DEFAULT NULL,
-  `full_name` VARCHAR(45) DEFAULT NULL,
-  `email` VARCHAR(45) DEFAULT NULL,
-  `phone` VARCHAR(45) DEFAULT NULL,
+  `first_name` VARCHAR(255) DEFAULT NULL,
+  `last_name` VARCHAR(255) DEFAULT NULL,
+  `full_name` VARCHAR(255) DEFAULT NULL,
+  `email` VARCHAR(255) DEFAULT NULL,
+  `phone` VARCHAR(255) DEFAULT NULL,
   `address` JSON DEFAULT NULL,
-  `role` VARCHAR(45) DEFAULT NULL,
+  `role` VARCHAR(255) DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE (`email`),
@@ -35,8 +35,10 @@ CREATE TABLE `invoices` (
 CREATE TABLE `accounts` (
   `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
   `primaryContact` VARCHAR(36) NOT NULL,
-  `companyName` VARCHAR(45) NOT NULL,
+  `companyName` VARCHAR(255) NOT NULL,
   `companyAddress` JSON,
+  `companyPhone` VARCHAR(36),
+  `companyEmail` VARCHAR(36),
   `subscriptionPlan` VARCHAR(36),
   `billingInfo` JSON,
   PRIMARY KEY (`id`),
@@ -44,7 +46,6 @@ CREATE TABLE `accounts` (
   ON DELETE CASCADE
   ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 
 

@@ -28,14 +28,26 @@ profileRouter.post("/create", async (req, res) => {
     let full_name = `${first_name} ${last_name}`;
     await db.query(
       sql`INSERT INTO profiles (first_name, last_name, full_name, email, phone, address, role) 
-          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${address}, ${role})`
+          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${JSON.stringify(
+        address
+      )}, ${role})`
     );
 
     const result = await db.query(
       sql`SELECT id FROM profiles WHERE email = ${email} LIMIT 1`
     );
     const newProfileId = result[0].id;
-    res.status(201).json({ success: true, id: newProfileId });
+    let newProfile = {
+      id: newProfileId,
+      first_name: first_name,
+      last_name: last_name,
+      full_name: full_name,
+      email: email,
+      phone: phone,
+      address: address,
+      role: role,
+    };
+    res.status(201).json(newProfile);
   } catch (error) {
     console.error("error", error);
     res.status(500).json({ success: false, message: "Error creating profile" });
