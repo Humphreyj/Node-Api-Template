@@ -56,12 +56,14 @@ profileRouter.post("/create", async (req, res) => {
 });
 
 profileRouter.put("/update", async (req, res) => {
-  const { id, first_name, last_name, phone, email, address, role } = req.body;
+  const { id, accountId, first_name, last_name, phone, email, address, role } =
+    req.body;
   try {
     let full_name = `${first_name} ${last_name}`;
     await db.query(sql`
         UPDATE profiles
         SET 
+          accountId = ${accountId},
           first_name = ${first_name},
           last_name = ${last_name},
           full_name = ${full_name},

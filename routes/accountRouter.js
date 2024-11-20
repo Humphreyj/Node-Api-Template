@@ -10,7 +10,6 @@ accountRouter.get("/:id", async (req, res) => {
           SELECT * from accounts WHERE id = ${id};
         `);
   let account = results[0];
-  console.log(account);
   // let primaryContact = await db.query(sql`
   //   SELECT * from profiles WHERE id = ${account.primaryContact};
   // `);
@@ -24,8 +23,8 @@ accountRouter.post("/create", async (req, res) => {
     primaryContact,
     companyName,
     companyAddress,
-    phone,
-    email,
+    companyPhone,
+    companyEmail,
     subscriptionPlan,
     billingInfo,
   } = req.body;
@@ -34,7 +33,7 @@ accountRouter.post("/create", async (req, res) => {
       sql`INSERT INTO accounts (primaryContact, companyName, companyAddress, companyPhone, companyEmail, subscriptionPlan, billingInfo )
       VALUES (${primaryContact}, ${companyName},${JSON.stringify(
         companyAddress
-      )}, ${phone}, ${email}, ${subscriptionPlan} , ${JSON.stringify(
+      )}, ${companyPhone}, ${companyEmail}, ${subscriptionPlan} , ${JSON.stringify(
         billingInfo
       )} )`
     );
@@ -49,6 +48,37 @@ accountRouter.post("/create", async (req, res) => {
   } catch (error) {
     console.error("error", error);
     res.status(500).json({ success: false, message: "Error creating profile" });
+    return;
+  }
+});
+
+accountRouter.put("/update/:id", async (req, res) => {
+  const id = req.params.id;
+  const {
+    primaryContact,
+    companyName,
+    companyAddress,
+    companyPhone,
+    companyEmail,
+    subscriptionPlan,
+    billingInfo,
+  } = req.body;
+
+  try {
+    await db.query(
+      sql`UPDATE accounts SET primaryContact = ${primaryContact}, companyName = ${companyName}, companyAddress = ${JSON.stringify(
+        companyAddress
+      )}, companyPhone = ${companyPhone}, companyEmail = ${companyEmail}, subscriptionPlan = ${subscriptionPlan}, billingInfo = ${JSON.stringify(
+        billingInfo
+      )} WHERE id = ${id}`
+    );
+    const updatedAccount = await db.query(
+      sql`SELECT * FROM accounts WHERE id = ${id}`
+    );
+    res.status(200).json(updatedAccount[0]);
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).json({ success: false, message: "Error updating account" });
     return;
   }
 });
