@@ -11,6 +11,7 @@ const port = 8080;
 // const db = await getConnection();
 
 app.use(cors()).use(express.json()).use(helmet()).use("/api", router);
+app.use("/.netlify/functions/app", router);
 
 process.once("SIGTERM", () => {
   db.dispose().catch((ex) => {
