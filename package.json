@@ -7,7 +7,7 @@
   "scripts": {
     "server": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build --output dist"
+    "build": "node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,11 +18,9 @@
     "express": "^4.21.1",
     "helmet": "^8.0.0",
     "netlify-cli": "^17.38.0",
-    "netlify-lambda": "^2.0.16",
     "nodemailer": "^6.9.16",
     "pdfkit": "^0.15.0",
-    "puppeteer": "^23.6.1",
-    "serverless-http": "^3.2.0"
+    "puppeteer": "^23.6.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
