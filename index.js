@@ -13,10 +13,8 @@ const port = 8080;
 app.use(cors()).use(express.json()).use(helmet()).use("/api", router);
 app.use("/.netlify/functions/app", router);
 
-process.once("SIGTERM", () => {
-  db.dispose().catch((ex) => {
-    console.error(ex);
-  });
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
 app.listen(port, () => {
