@@ -7,7 +7,7 @@
   "scripts": {
     "server": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "vercel build"
+    "build": "npx vercel build"
   },
   "author": "",
   "license": "ISC",
