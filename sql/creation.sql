@@ -15,6 +15,7 @@ CREATE TABLE `profiles` (
 
 CREATE TABLE `invoices` (
   `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
+  `accountId` CHAR(36) DEFAULT NULL,
   `clientId` VARCHAR(36) NOT NULL,
   `client` JSON DEFAULT NULL,
   `invoiceNumber` VARCHAR(36) NOT NULL,
@@ -22,13 +23,13 @@ CREATE TABLE `invoices` (
   `dueDate` DATE NOT NULL,
   `invoiceTotal` DECIMAL(10, 2) NOT NULL,
   `lineItems` JSON DEFAULT NULL,
-  `status` ENUM('unpaid', 'paid', 'overdue', 'void') DEFAULT 'unpaid',
+  `status` ENUM('draft', 'paid', 'overdue', 'void') DEFAULT 'draft',
   `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`clientId`) REFERENCES `profiles`(`id`) 
+  FOREIGN KEY (`clientId`) REFERENCES `profiles`(`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    INDEX (`clientId`)
+  INDEX (`clientId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

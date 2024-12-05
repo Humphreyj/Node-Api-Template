@@ -13,6 +13,18 @@ profileRouter.get("/", async (req, res) => {
   return;
 });
 
+profileRouter.get("/list/:accountId", async (req, res) => {
+  let accountId = req.params.accountId;
+  const results = await db.query(sql`
+        SELECT * from profiles
+        WHERE role = 'client' AND accountId = ${accountId};
+      `);
+
+  res.send(results);
+
+  return;
+});
+
 profileRouter.get("/:id", async (req, res) => {
   let id = req.params.id;
   const results = await db.query(sql`
@@ -23,12 +35,13 @@ profileRouter.get("/:id", async (req, res) => {
 });
 
 profileRouter.post("/create", async (req, res) => {
-  const { first_name, last_name, email, phone, address, role } = req.body;
+  const { accountId, first_name, last_name, email, phone, address, role } =
+    req.body;
   try {
     let full_name = `${first_name} ${last_name}`;
     await db.query(
-      sql`INSERT INTO profiles (first_name, last_name, full_name, email, phone, address, role) 
-          VALUES (${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${JSON.stringify(
+      sql`INSERT INTO profiles ( accountId, first_name, last_name, full_name, email, phone, address, role) 
+          VALUES (${accountId}, ${first_name}, ${last_name}, ${full_name}, ${email}, ${phone}, ${JSON.stringify(
         address
       )}, ${role})`
     );
