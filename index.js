@@ -12,7 +12,7 @@ const port = 8080;
 
 app.use(cors()).use(express.json()).use(helmet()).use("/api", router);
 
-app.get("/", (req, res) => {
+app.get("/api/", (req, res) => {
   res.send("Hello World!");
 });
 
