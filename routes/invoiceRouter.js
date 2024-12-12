@@ -48,6 +48,7 @@ invoiceRouter.post("/create", async (req, res) => {
     status,
     comments,
     discount,
+    totalDiscount,
   } = req.body;
 
   const formattedInvoiceDate = new Date(invoiceDate)
@@ -144,7 +145,7 @@ invoiceRouter.post("/send-invoice", async (req, res) => {
     },
   });
   await page.goto(`http://localhost:3030/send-invoice/${invoiceId}`);
-
+  await delay(5000);
   // Generate the PDF as a buffer
   const pdfBuffer = await page.pdf({ printBackground: true });
 
@@ -189,5 +190,11 @@ invoiceRouter.post("/send-invoice", async (req, res) => {
   );
 
   // Send the buffer and close the response
-  res.send(pdfBuffer);
+  res.status(200).send(pdfBuffer);
 });
+
+function delay(time) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, time);
+  });
+}

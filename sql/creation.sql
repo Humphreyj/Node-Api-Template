@@ -13,25 +13,6 @@ CREATE TABLE `profiles` (
   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `invoices` (
-  `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
-  `accountId` CHAR(36) DEFAULT NULL,
-  `clientId` VARCHAR(36) NOT NULL,
-  `client` JSON DEFAULT NULL,
-  `invoiceNumber` VARCHAR(36) NOT NULL,
-  `invoiceDate` DATE NOT NULL,
-  `dueDate` DATE NOT NULL,
-  `invoiceTotal` DECIMAL(10, 2) NOT NULL,
-  `lineItems` JSON DEFAULT NULL,
-  `status` ENUM('draft', 'paid', 'overdue', 'void') DEFAULT 'draft',
-  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`clientId`) REFERENCES `profiles`(`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  INDEX (`clientId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 CREATE TABLE `accounts` (
   `id` VARCHAR(36) NOT NULL DEFAULT (UUID()),
@@ -47,6 +28,31 @@ CREATE TABLE `accounts` (
   ON DELETE CASCADE
   ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE
+  `invoices` (
+    `id` varchar(36) NOT NULL DEFAULT(uuid()),
+    `accountId` char(36) DEFAULT NULL,
+    `clientId` varchar(36) NOT NULL,
+    `client` json DEFAULT NULL,
+    `invoiceNumber` varchar(36) NOT NULL,
+    `invoiceDate` datetime DEFAULT NULL,
+    `dueDate` datetime DEFAULT NULL,
+    `invoiceTotal` decimal(10, 2) NOT NULL,
+    `lineItems` json DEFAULT NULL,
+    `status` enum('draft', 'unpaid', 'paid', 'overdue', 'void') DEFAULT NULL,
+    `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `lastSentDate` datetime DEFAULT NULL,
+    `comments` text,
+    `discount` float DEFAULT NULL,
+    `totalDiscount` float DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `clientId` (`clientId`),
+    CONSTRAINT `invoices_ibfk_1` FOREIGN KEY (`clientId`) REFERENCES `profiles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci
+
+
+
 
 
 
