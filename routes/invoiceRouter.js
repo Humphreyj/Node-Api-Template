@@ -49,6 +49,9 @@ invoiceRouter.post("/create", async (req, res) => {
     comments,
     discount,
     totalDiscount,
+    taxable,
+    taxRate,
+    totalTax,
   } = req.body;
 
   const formattedInvoiceDate = new Date(invoiceDate)
@@ -62,12 +65,12 @@ invoiceRouter.post("/create", async (req, res) => {
 
   try {
     await db.query(
-      sql`INSERT INTO invoices (accountId, clientId, client, invoiceNumber, invoiceDate, dueDate, invoiceTotal, lineItems, status, comments, discount, totalDiscount) 
+      sql`INSERT INTO invoices (accountId, clientId, client, invoiceNumber, invoiceDate, dueDate, invoiceTotal, lineItems, status, comments, discount, totalDiscount, taxable, taxRate, totalTax) 
           VALUES (${accountId}, ${clientId}, ${JSON.stringify(
         client
       )}, ${invoiceNumber}, ${formattedInvoiceDate}, ${formattedDueDate}, ${invoiceTotal}, ${JSON.stringify(
         lineItems
-      )}, ${status}, ${comments}, ${discount}, ${totalDiscount})`
+      )}, ${status}, ${comments}, ${discount}, ${totalDiscount}, ${taxable}, ${taxRate}, ${totalTax})`
     );
 
     const result = await db.query(
@@ -96,6 +99,9 @@ invoiceRouter.put("/update", async (req, res) => {
     comments,
     discount,
     totalDiscount,
+    taxable,
+    taxRate,
+    totalTax,
   } = req.body;
 
   try {
@@ -112,7 +118,10 @@ invoiceRouter.put("/update", async (req, res) => {
             status = ${status},
             comments = ${comments},
             discount = ${discount},
-            totalDiscount = ${totalDiscount}
+            totalDiscount = ${totalDiscount},
+            taxable = ${taxable},
+            taxRate = ${taxRate},
+            totalTax = ${totalTax}
           WHERE id = ${id}
             `
     );
