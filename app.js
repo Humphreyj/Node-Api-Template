@@ -4,13 +4,20 @@ import { router } from "./routes/index.js";
 import cors from "cors";
 import helmet from "helmet";
 import "dotenv/config";
+// Middleware
+import { geoFence } from "./middleware/geoFence.js";
 
 const app = express();
 const port = 8080;
 
 // const db = await getConnection();
 
-app.use(cors()).use(express.json()).use(helmet()).use("/api", router);
+app
+  .use(cors())
+  .use(express.json())
+  .use(helmet())
+  .use(geoFence)
+  .use("/api", router);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
