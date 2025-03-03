@@ -32,6 +32,7 @@ profileRouter.get("/:id", async (req, res) => {
   const results = await db.query(sql`
         SELECT * from profiles WHERE id = ${id};
       `);
+  delete results[0].password;
   res.send(results[0]);
   return;
 });

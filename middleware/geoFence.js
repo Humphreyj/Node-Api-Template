@@ -5,7 +5,8 @@ export const geoFence = (req, res, next) => {
   const geo = geoip.lookup(ip);
 
   if (ip === "::ffff:127.0.0.1") {
-    return res.status(200).send("Local");
+    // return res.status(200).send("Local");
+    next();
   }
 
   if (geo && geo.country !== "US") {

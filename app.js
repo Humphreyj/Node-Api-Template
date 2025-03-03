@@ -16,7 +16,7 @@ app
   .use(cors())
   .use(express.json())
   .use(helmet())
-  .use(geoFence)
+  // .use(geoFence)
   .use("/api", router);
 
 app.get("/", (req, res) => {

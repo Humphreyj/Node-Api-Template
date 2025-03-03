@@ -44,7 +44,10 @@ accountRouter.post("/create", async (req, res) => {
     const newAccount = await db.query(
       sql`SELECT * FROM accounts WHERE id = ${newAccountId[0].id}`
     );
-    res.status(201).json(newAccount[0]);
+
+    let result = newAccount[0];
+    delete result.password;
+    res.status(201).json(result);
   } catch (error) {
     console.error("error", error);
     res.status(500).json({ success: false, message: "Error creating profile" });
@@ -122,7 +125,7 @@ accountRouter.post("/request-access", async (req, res) => {
       to: email,
       subject: `Create your Ezpdf acco`,
       text: "Your invoice is attached, you better pay it.",
-      html: `<p>Click <a href="http://localhost:3030/account/new/${insertedRequest[0].id}">here</a> to create your account</p>`,
+      html: `<p>Click <a target="_blank" rel="noopener noreferrer"  href="http://localhost:3030/account/new/${insertedRequest[0].id}">here</a> to create your account</p>`,
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {

@@ -153,8 +153,9 @@ invoiceRouter.post("/send-invoice", async (req, res) => {
       pass: process.env.SMTP_PASS,
     },
   });
-  await page.goto(`http://localhost:3030/send-invoice/${invoiceId}`);
-  await delay(5000);
+  // await page.goto(`http://localhost:3030/send-invoice/${invoiceId}`);
+  await page.goto(`http://localhost:3030/resume`);
+  await delay(1500);
   // Generate the PDF as a buffer
   const pdfBuffer = await page.pdf({ printBackground: true });
 
@@ -166,12 +167,13 @@ invoiceRouter.post("/send-invoice", async (req, res) => {
   res.setHeader("Content-Length", pdfBuffer.length);
   const mailOptions = {
     from: "system@ezpdf.app",
-    to: client.email,
-    subject: `Invoice for ${client.full_name}`,
+    // to: client.email,
+    to: "joshhumphrey1@gmail.com",
+    subject: `Invoice for `,
     text: "Your invoice is attached, you better pay it.",
     attachments: [
       {
-        filename: `Invoice-${invoiceNumber}.pdf`,
+        filename: `resume.pdf`,
         content: pdfBuffer,
         contentType: "application/pdf",
       },
@@ -190,13 +192,13 @@ invoiceRouter.post("/send-invoice", async (req, res) => {
     .slice(0, 19)
     .replace("T", " ");
 
-  await db.query(
-    sql`UPDATE invoices
-          SET
-            lastSentDate = ${formattedSentDate},
-            status = 'unpaid'
-          WHERE id = ${invoiceId}`
-  );
+  // await db.query(
+  //   sql`UPDATE invoices
+  //         SET
+  //           lastSentDate = ${formattedSentDate},
+  //           status = 'unpaid'
+  //         WHERE id = ${invoiceId}`
+  // );
 
   // Send the buffer and close the response
   res.status(200).send(pdfBuffer);
